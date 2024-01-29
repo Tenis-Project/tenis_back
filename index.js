@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 
 const UserRoutes = require("./routes/userRoutes");
 app.use("/api/users", UserRoutes);
+const ClassRoutes = require("./routes/classRoutes");
+app.use("/api/classes", ClassRoutes);
 
 app.get("/test-route", (_req, res) => {
     return res.status(200).json({

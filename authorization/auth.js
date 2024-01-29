@@ -17,18 +17,11 @@ exports.auth = (req, res, next) => {
     try {
         let payLoad = jwt.decode(token, secret);
 
-        if (payLoad.exp <= moment().unix()) {
-            return res.status(401).json({
-                "status": "error",
-                "message": "Token expired"
-            });
-        }
-
         req.user = payLoad;
     } catch (error) {
-        return res.status(404).json({
+        return res.status(401).json({
             "status": "error",
-            "message": "Invalid token"
+            "message": "Token expirado"
         });
     }
 
