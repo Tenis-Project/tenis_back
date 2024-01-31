@@ -2,66 +2,52 @@ const Reservation = require("../models/reservationModel");
 
 const create = async (req, res) => {
     let body = req.body;
-    let treatmentDetailId = req.query.idTreatmentDetail;
-    let doctorId = req.query.idDoctor;
-    let campusId = req.query.idCampus;
 
-    if (!body.hour || !body.date) {
+    if (!body.hour || !body.date || !body.class) {
         return res.status(400).json({
             "status": "error",
-            "message": "Faltan datos de hora o fecha"
+            "message": "Faltan datos"
         });
     }
 
-    let bodyTreatmentAppointment = {
-        treatmentDetail: treatmentDetailId,
-        description: body.description,
+    let bodyReservation = {
         date: body.date,
-        status: "Agendado",
         hour: body.hour,
-        cost: body.cost,
-        doctor: doctorId,
-        campus: campusId,
-        duration: body.duration
+        user: req.user.id,
+        class: body.class,
     }
 
-    let treatment_appointment_to_save = new TreatmentAppointment(bodyTreatmentAppointment);
+    let reservation_to_save = new Reservation(bodyReservation);
 
     try {
-        const treatmentAppointmentStored = await treatment_appointment_to_save.save();
+        const reservationStored = await reservation_to_save.save();
 
-        if (!treatmentAppointmentStored) {
+        if (!reservationStored) {
             return res.status(500).json({
                 "status": "error",
-                "message": "No treatmentAppointment saved"
+                "message": "No reservation saved"
             });
         }
 
-        const populatedTreatmentAppointment = await TreatmentAppointment.findById(treatmentAppointmentStored._id).populate([{ path: "doctor", populate: { path: "personData", select: 'names fatherLastName motherLastName' }, select: 'personData' }, { path: "campus", populate: {path: 'clinic', select: 'user -_id' }, select: 'name clinic user -_id' }, { path: "treatmentDetail", select: '_id' } ]).sort('hour').select('-__v');
-
         return res.status(200).json({
             "status": "success",
-            "message": "Treatment appointment registered",
-            "treatmentAppointment": populatedTreatmentAppointment
+            "message": "Reservation registered",
+            "reservation": reservationStored
         });
     } catch (error) {
         return res.status(500).json({
             "status": "error",
-            "message": "Error while saving treatment appointment",
+            "message": "Error while saving reservation",
             error
         });
     }
 }
 
 const myReservations = async (req, res) => {
-    let userId = new ObjectId(req.user.id);
-
-    Reservation.find({ user: userId }).then(reservations => {
-        //payments = payments.filter(payment => payment.campus.clinic);
-        
+    Reservation.find({ user: req.user.id }).populate('user class').then(reservations => {        
         if (reservations.length == 0) {
             return res.status(404).json({
-                status: "Error",
+                status: "error",
                 message: "Reservaciones no encontradas"
             });
         }
@@ -79,5 +65,6 @@ const myReservations = async (req, res) => {
 }
 
 module.exports = {
+    create,
     myReservations
 }

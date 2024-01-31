@@ -4,7 +4,7 @@ const ReservationSchema = Schema({
     date: {
         type: Date
     },
-    type: {
+    hour: {
         type: String
     },
     user: {
