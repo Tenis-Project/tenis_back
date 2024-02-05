@@ -7,6 +7,10 @@ const ReservationSchema = Schema({
     hour: {
         type: String
     },
+    status: {
+        type: String,
+        default: "Pendiente"
+    },
     user: {
         type: Schema.ObjectId,
         ref: "User"

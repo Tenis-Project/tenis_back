@@ -1,7 +1,7 @@
 module.exports = (io) => {
     io.on('connection', (socket) => {
-        socket.on('createdReservation', (_) => {
-            io.emit('createdReservationInUserView', _);
+        socket.on('createdReservation', (arg) => {
+            io.emit('createdReservationInUserView', arg);
         });
     });
 }
