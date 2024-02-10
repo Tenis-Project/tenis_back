@@ -1,12 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const ReservationSchema = Schema({
-    date: {
-        type: Date
-    },
-    hour: {
-        type: String
-    },
+const ClassPackageSchema = Schema({
     status: {
         type: String,
         default: "Pendiente"
@@ -18,10 +12,7 @@ const ReservationSchema = Schema({
     class: {
         type: Schema.ObjectId,
         ref: "Class"
-    },
-    classPackage: {
-        type: String
     }
 });
 
-module.exports = model("Reservation", ReservationSchema, "reservations");
+module.exports = model("ClassPackage", ClassPackageSchema, "classPackages");

@@ -22,6 +22,8 @@ const ClassRoutes = require("./routes/classRoutes");
 app.use("/api/classes", ClassRoutes);
 const ReservationRoutes = require("./routes/reservationRoutes");
 app.use("/api/reservations", ReservationRoutes);
+const ClassPackageRoutes = require("./routes/classPackagesRoutes");
+app.use("/api/classPackages", ClassPackageRoutes);
 
 app.get("/test-route", (_req, res) => {
     return res.status(200).json({

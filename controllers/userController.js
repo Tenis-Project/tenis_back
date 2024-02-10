@@ -123,7 +123,7 @@ const loginUser = (req, res) => {
 }
 
 const myObject = (req, res) => {
-    User.findById(req.user.id).select('-password -__v').then(user => {
+    User.findById(req.user.id).select('-__v').then(user => {
         if (!user) {
             return res.status(404).json({
                 "status": "error",

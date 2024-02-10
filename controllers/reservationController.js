@@ -1,5 +1,7 @@
 const Reservation = require("../models/reservationModel");
 
+const middlewareService = require("../services/group");
+
 const create = async (req, res) => {
     let body = req.body;
 
@@ -15,13 +17,28 @@ const create = async (req, res) => {
         hour: body.hour,
         user: req.user.id,
         class: body.class,
+        status: body.status,
+        classPackage: body.classPackage
     }
 
     let reservation_to_save = new Reservation(bodyReservation);
 
     try {
-        let reservations = await Reservation.find({hour: bodyReservation.hour});
+        let reservationsUser = await Reservation.find({ user: req.user.id, hour: bodyReservation.hour});
         let today = new Date(bodyReservation.date).setHours(0,0,0,0);
+
+        reservationsUser = reservationsUser.filter(reservation => {
+            return new Date(reservation.date).setHours(0,0,0,0) == today
+        });
+
+        if (reservationsUser && reservationsUser.length >= 1) {
+            return res.status(404).json({
+                "status": "error",
+                "message": "Fecha y hora ya reservadas"
+            });
+        }
+
+        let reservations = await Reservation.find({hour: bodyReservation.hour});
         reservations = reservations.filter(reservation => {
             return new Date(reservation.date).setHours(0,0,0,0) == today
         });
@@ -112,32 +129,27 @@ const getAllReservationsByDate = async (req, res) => {
     });
 }
 
-const getReservationHoursByDate = async (req, res) => {
+const getReservationHoursAndSpacesByDate = async (req, res) => {
     let date = req.query.date;
     let today = new Date(date).setHours(0,0,0,0);
-    let reservationHours = [];
 
     Reservation.find().populate('user class').sort('hour').then(reservations => {
-        reservations.forEach(reservation => {
-            if (new Date(reservation.date).setHours(0,0,0,0) == today) {
-                reservationHours.push(reservation.hour)
-            }
+        reservations = reservations.filter(reservation => {
+            return new Date(reservation.date).setHours(0,0,0,0) == today;
         });
 
-        let uniqueReservationHours = [...new Set(reservationHours)];
-
-        console.log(uniqueReservationHours);
-
-        if (reservationHours.length == 0) {
+        if (reservations.length == 0) {
             return res.status(404).json({
                 status: "error",
                 message: "Reservaciones no encontradas"
             });
         }
 
+        const groupedReservations = middlewareService.groupByHour(reservations);
+
         return res.status(200).json({
             "status": "success",
-            uniqueReservationHours
+            groupedReservations
         });
     }).catch(error => {
         return res.status(500).json({
@@ -147,9 +159,77 @@ const getReservationHoursByDate = async (req, res) => {
     });
 }
 
+const getByClassPackageId = async (req, res) => {
+    Reservation.find({ classPackage: req.query.idClassPackage }).populate('user class').then(reservations => {
+        if (reservations.length == 0) {
+            return res.status(404).json({
+                status: "error",
+                message: "Reservaciones no encontradas para el paquete de clase"
+            });
+        }
+
+        return res.status(200).json({
+            "status": "success",
+            reservations
+        });
+    }).catch(error => {
+        return res.status(500).json({
+            "status": "error",
+            error
+        });
+    });
+}
+
+const editReservation = (req, res) => {
+    let id = req.query.idReservation;
+
+    Reservation.findOneAndUpdate({ _id: id }, req.body, { new: true }).then(reservationUpdated => {
+        if (!reservationUpdated) {
+            return res.status(404).json({
+                status: "error",
+                mensaje: "Reservation not found"
+            });
+        }
+        return res.status(200).send({
+            status: "success",
+            reservation: reservationUpdated
+        });
+    }).catch(() => {
+        return res.status(404).json({
+            status: "error",
+            mensaje: "Error while finding and updating reservation"
+        });
+    });
+}
+
+const deleteById = async (req, res) => {
+    let reservationId = req.body.id;
+
+    Reservation.findOneAndDelete({ "_id": reservationId }).then(reservationDeleted => {
+        if (!reservationDeleted) {
+            return res.status(500).json({
+                "status": "error",
+                "message": "No Reservation found"
+            });
+        }
+        return res.status(200).json({
+            "status": "success",
+            "message": "Reservation deleted successfully"
+        });
+    }).catch(error => {
+        return res.status(500).json({
+            "status": "error",
+            "message": "Error while deleting Reservation"
+        });
+    });
+}
+
 module.exports = {
     create,
     myReservationsByDate,
     getAllReservationsByDate,
-    getReservationHoursByDate
+    getReservationHoursAndSpacesByDate,
+    getByClassPackageId,
+    editReservation,
+    deleteById
 }
