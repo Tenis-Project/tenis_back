@@ -1,7 +1,7 @@
 module.exports = (io) => {
     io.on('connection', (socket) => {
         socket.on('createdReservation', (arg) => {
-            io.emit('createdReservationInUserView', arg);
+            io.emit('updateReservationInUserView', arg);
         });
 
         socket.on('updatedReservation', (arg) => {
@@ -22,6 +22,10 @@ module.exports = (io) => {
 
         socket.on('deletedClassPackage', (arg) => {
             io.emit('updatedClassPackageInAdminView', arg);
+        });
+
+        socket.on('deletedReservationInUserView', (arg) => {
+            io.emit('updateReservationInUserView', arg);
         });
     });
 }
