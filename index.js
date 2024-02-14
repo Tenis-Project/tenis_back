@@ -26,6 +26,8 @@ const ReservationRoutes = require("./routes/reservationRoutes");
 app.use("/api/reservations", ReservationRoutes);
 const ClassPackageRoutes = require("./routes/classPackagesRoutes");
 app.use("/api/classPackages", ClassPackageRoutes);
+const DeleteAccountRequestRoutes = require("./routes/deleteAccountRequestRoutes");
+app.use("/api/deleteAccountRequest", DeleteAccountRequestRoutes);
 
 app.get("/test-route", (_req, res) => {
     return res.status(200).json({
