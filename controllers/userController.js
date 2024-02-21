@@ -69,7 +69,6 @@ const register = async (req, res) => {
 
 const loginUser = (req, res) => {
     const body = req.body;
-    console.log(body);
 
     if (!body.username || !body.password) {
         return res.status(400).json({
@@ -79,7 +78,6 @@ const loginUser = (req, res) => {
     }
 
     User.findOne({ username: body.username }).then(user => {
-        console.log(user);
         if (!user) {
             return res.status(400).json({
                 "status": "error",
