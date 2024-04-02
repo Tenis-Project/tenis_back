@@ -6,7 +6,7 @@ const jwt = require("../authorization/jwt");
 const register = async (req, res) => {
     let userBody = req.body;
 
-    if (!userBody.username || !userBody.password || !userBody.name || !userBody.lastName || !userBody.dni || !userBody.phone) {
+    if (!userBody.username || !userBody.password || !userBody.name || !userBody.lastName) {
         return res.status(400).json({
             "status": "error",
             "message": "Faltan datos"
@@ -17,9 +17,7 @@ const register = async (req, res) => {
         username: userBody.username,
         password: userBody.password,
         name: userBody.name,
-        lastName: userBody.lastName,
-        dni: userBody.dni,
-        phone: userBody.phone
+        lastName: userBody.lastName
     }
 
     try {

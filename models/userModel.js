@@ -13,12 +13,6 @@ const UserSchema = Schema({
     lastName: {
         type: String
     },
-    dni: {
-        type: String
-    },
-    phone: {
-        type: String
-    },
     role: {
         type: String,
         default: "Usuario"
