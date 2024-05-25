@@ -6,8 +6,7 @@ const socketIo = require('socket.io');
 
 console.log("Tenis backend api started");
 
-//const uri = process.env.MONGO_URI || "mongodb+srv://joserodrigolopez:xK22YDi1adZJdw25@mongodbdeployed.nr8iyxd.mongodb.net/tenis_back";
-const uri = process.env.MONGO_URI;
+const uri = process.env.MONGO_URI || "mongodb+srv://joserodrigolopez:xK22YDi1adZJdw25@mongodbdeployed.nr8iyxd.mongodb.net/tenis_back";
 
 connection(uri);
 
