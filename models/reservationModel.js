@@ -21,6 +21,10 @@ const ReservationSchema = Schema({
     },
     classPackage: {
         type: String
+    },
+    note: {
+        type: String,
+        default: ""
     }
 });
 

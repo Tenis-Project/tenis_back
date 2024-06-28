@@ -18,7 +18,8 @@ const create = async (req, res) => {
         user: req.user.id,
         class: body.class,
         status: body.status,
-        classPackage: body.classPackage
+        classPackage: body.classPackage,
+        note: body.note
     }
 
     let reservation_to_save = new Reservation(bodyReservation);
