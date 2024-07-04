@@ -141,8 +141,30 @@ const myObject = (req, res) => {
     });
 }
 
+const list = (_req, res) => {
+    User.find().then(users => {
+        if (!users) {
+            return res.status(404).json({
+                status: "Error",
+                message: "No users avaliable..."
+            });
+        }
+
+        return res.status(200).json({
+            "status": "success",
+            users
+        });
+    }).catch(error => {
+        return res.status(500).json({
+            "status": "error",
+            error
+        });
+    });
+}
+
 module.exports = {
     register,
     loginUser,
-    myObject
+    myObject,
+    list
 }
