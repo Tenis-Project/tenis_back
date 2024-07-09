@@ -6,12 +6,12 @@ const socketIo = require('socket.io');
 
 console.log("Tenis backend api started");
 
-const uri = process.env.MONGO_URI || "mongodb+srv://joserodrigolopez:xK22YDi1adZJdw25@mongodbdeployed.nr8iyxd.mongodb.net/tenis_back";
+const uri = process.env.MONGO_URI;
 
 connection(uri);
 
 const app = express();
-//const port = process.env.PORT || 3000;
+
 const port = process.env.PORT;
 app.use(cors());
 app.use(express.json());
@@ -32,7 +32,7 @@ app.get("/test-route", (_req, res) => {
     return res.status(200).json({
         "id": 1,
         "name": "Jose Lopez",
-        "version": "1.5.2"
+        "version": "1.5.3"
     });
 });
 
