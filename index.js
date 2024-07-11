@@ -30,8 +30,6 @@ app.use("/api/deleteAccountRequest", DeleteAccountRequestRoutes);
 
 app.get("/test-route", (_req, res) => {
     return res.status(200).json({
-        "id": 1,
-        "name": "Jose Lopez",
         "version": "1.5.3"
     });
 });
