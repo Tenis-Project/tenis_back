@@ -30,7 +30,7 @@ app.use("/api/deleteAccountRequest", DeleteAccountRequestRoutes);
 
 app.get("/test-route", (_req, res) => {
     return res.status(200).json({
-        "version": "1.5.3"
+        "version": "1.5.4"
     });
 });
 
